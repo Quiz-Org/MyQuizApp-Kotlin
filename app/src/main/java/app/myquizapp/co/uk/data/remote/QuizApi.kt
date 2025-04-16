@@ -7,9 +7,9 @@ import retrofit2.http.Path
 interface QuizApi {
 
     @GET("quiz/all")
-    suspend fun getQuizzes(): Call<List<QuizDto>>
+    suspend fun getQuizzes(): List<QuizDto>
 
     @GET("quiz/{quizId}")
-    suspend fun getQuestions(@Path("quizId") quizId: Int): Call<List<QuestionListDto>>
+    suspend fun getQuestions(@Path("quizId") quizId: Int): List<QuestionListDto>
 
 }

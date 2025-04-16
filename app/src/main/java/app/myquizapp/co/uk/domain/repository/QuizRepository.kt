@@ -5,6 +5,6 @@ import app.myquizapp.co.uk.domain.util.Resource
 
 interface QuizRepository {
 
-    suspend fun getAllQuizes(): Resource<Quiz>
+    suspend fun getAllQuizzes(): Resource<List<Quiz>>
 
 }

@@ -11,3 +11,9 @@ fun QuizDto.toQuiz(): Quiz {
         desc = this.desc
     )
 }
+
+fun List<QuizDto>.toQuizList(): List<Quiz>{
+
+
+
+}
