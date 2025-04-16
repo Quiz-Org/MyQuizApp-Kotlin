@@ -1,4 +1,4 @@
-package app.myquizapp.co.uk.ui.theme
+package app.myquizapp.co.uk.presentation.ui.theme
 
 import android.app.Activity
 import android.os.Build

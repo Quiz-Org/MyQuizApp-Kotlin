@@ -1,4 +1,4 @@
-package app.myquizapp.co.uk.ui.theme
+package app.myquizapp.co.uk.presentation.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

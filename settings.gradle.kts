@@ -19,6 +19,8 @@ dependencyResolutionManagement {
     }
 }
 
+
+
 rootProject.name = "MyQuizApp-Kotlin"
 include(":app")
  
