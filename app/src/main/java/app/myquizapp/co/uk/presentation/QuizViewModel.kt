@@ -9,7 +9,6 @@ import app.myquizapp.co.uk.domain.repository.QuizRepository
 import app.myquizapp.co.uk.domain.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendCancellableCoroutine
 import javax.inject.Inject
 
 @HiltViewModel
