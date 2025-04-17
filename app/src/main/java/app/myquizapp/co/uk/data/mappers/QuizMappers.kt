@@ -12,8 +12,8 @@ fun QuizDto.toQuiz(): Quiz {
     )
 }
 
-fun List<QuizDto>.toQuizList(): List<Quiz>{
-
-
-
-}
+//fun List<QuizDto>.toQuizList(): List<Quiz>{
+//
+//
+//
+//}
