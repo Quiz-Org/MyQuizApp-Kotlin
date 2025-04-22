@@ -1,10 +1,12 @@
-package app.myquizapp.co.uk.presentation
+package app.myquizapp.co.uk.presentation.composables
 
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import app.myquizapp.co.uk.presentation.QuizViewModel
+import app.myquizapp.co.uk.presentation.Screen
 
 @Composable
 fun Navigation(){

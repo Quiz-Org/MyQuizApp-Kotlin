@@ -1,4 +1,4 @@
-package app.myquizapp.co.uk.presentation
+package app.myquizapp.co.uk.presentation.composables
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import app.myquizapp.co.uk.presentation.Screen
 
 @Composable
 fun EntryScreen( navController: NavController){
