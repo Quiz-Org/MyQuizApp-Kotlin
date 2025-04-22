@@ -14,6 +14,8 @@ lifecycleViewmodelCompose = "2.8.7"
 loggingInterceptor = "5.0.0-alpha.3"
 retrofit = "2.9.0"
 ksp-version = "1.9.22-1.0.17"
+navVersion = "2.8.9"
+hiltNav = "1.2.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -27,6 +29,8 @@ androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-co
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+androidx-compose-navigation = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navVersion"}
+androidx-android-hilt-navigation = {group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNav"}
 androidx-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }

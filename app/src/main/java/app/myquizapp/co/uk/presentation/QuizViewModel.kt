@@ -19,7 +19,7 @@ class QuizViewModel @Inject constructor(
     var state by mutableStateOf(QuizState())
         private set
 
-    fun loadQuizList(){
+    fun loadQuizList() {
         viewModelScope.launch { state = state.copy(
                 isLoading = true,
                 error = null

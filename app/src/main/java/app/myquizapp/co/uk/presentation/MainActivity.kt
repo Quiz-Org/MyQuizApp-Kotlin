@@ -14,10 +14,9 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.loadQuizList()
         setContent {
             MyQuizAppKotlinTheme {
-                QuizListEntry(viewModel.state)
+                Navigation()
                 }
             }
         }
