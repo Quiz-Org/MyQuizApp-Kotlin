@@ -8,6 +8,6 @@ data class QuestionDto (
     val id: Int,
     val quizId:Int,
     val questionText: String,
-    val answers: AnswerDto
+    val answers: List<AnswerDto>
 
 )

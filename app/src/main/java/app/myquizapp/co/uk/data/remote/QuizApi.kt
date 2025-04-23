@@ -1,5 +1,6 @@
 package app.myquizapp.co.uk.data.remote
 
+import app.myquizapp.co.uk.domain.quiz.Question
 import retrofit2.http.GET
 import retrofit2.http.Path
 
@@ -9,6 +10,6 @@ interface QuizApi {
     suspend fun getQuizzes(): List<QuizDto>
 
     @GET("quiz/{quizId}")
-    suspend fun getQuestions(@Path("quizId") quizId: Int): List<QuestionListDto>
+    suspend fun getQuestions(@Path("quizId") quizId: Int): List<QuestionDto>
 
 }
