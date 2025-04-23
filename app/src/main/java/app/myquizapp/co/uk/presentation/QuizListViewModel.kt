@@ -1,15 +1,15 @@
 package app.myquizapp.co.uk.presentation
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import app.myquizapp.co.uk.domain.quiz.Quiz
 import app.myquizapp.co.uk.domain.repository.QuizRepository
 import app.myquizapp.co.uk.domain.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -19,39 +19,39 @@ class QuizListViewModel @Inject constructor(
     private val repository: QuizRepository
 ): ViewModel() {
 
-    var state by mutableStateOf(QuizState())
-        private set
+
+    private val _quizzes = MutableStateFlow<List<Quiz>>(listOf())
+    val quizzes = _quizzes.asStateFlow()
+
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading = _isLoading.asStateFlow()
+
+    private val _error = MutableStateFlow<String?>(null)
+    val error = _error.asStateFlow()
 
     private val quizLoadChannel = Channel<LoadEvent>()
     val quizLoadChannelFlow = quizLoadChannel.receiveAsFlow()
 
     fun loadQuizList() {
-        viewModelScope.launch { state = state.copy(
-            isLoading = true,
-            error = null
-        )
+        viewModelScope.launch {
 
-            delay(3000L)
+            _isLoading.value = true
+            _error.value = null
+
             when(val result = repository.getAllQuizzes()){
                 is Resource.Success -> {
-                    state = state.copy(
-                        quizzes = result.data,
-                        isLoading = false,
-                        error = null
-                    )
+                    _quizzes.value = result.data ?: emptyList()
+                    _isLoading.value = false
                 }
                 is Resource.Error -> {
-                    state = state.copy(
-                        quizzes = null,
-                        isLoading = false,
-                        error = result.message
-                    )
+                    _isLoading.value = false
+                    _error.value = result.message
                 }
             }
 
-            if (state.quizzes.isNullOrEmpty()) {
-                if (state.error != null) {
-                    state = state.copy(error = "No Quizzes were found")
+            if (_quizzes.value.isEmpty()) {
+                if (_error.value != null) {
+                    _error.value = "No Quizzes were found"
                 }
                 quizLoadChannel.send(LoadEvent.QuizLoadError)
             }

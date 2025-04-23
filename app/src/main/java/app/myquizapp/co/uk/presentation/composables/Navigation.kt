@@ -3,6 +3,7 @@ package app.myquizapp.co.uk.presentation.composables
 import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -19,7 +20,7 @@ import app.myquizapp.co.uk.presentation.Screen
 
 @Composable
 fun Navigation() {
-    //val viewModel = hiltViewModel<QuizViewModel>()
+
     val navController = rememberNavController()
 
     NavHost(navController = navController, startDestination = Screen.EntryScreen.route) {
@@ -46,7 +47,6 @@ fun Navigation() {
 
         composable(route = Screen.QuizListScreen.route) {
             val viewModel = hiltViewModel<QuizListViewModel>()
-            val state = viewModel.state
 
             viewModel.loadQuizList()
 
@@ -58,7 +58,7 @@ fun Navigation() {
                     viewModel.quizLoadChannelFlow.collect { event ->
                         when (event) {
                             LoadEvent.QuizLoadError ->{
-                                Toast.makeText(context, state.error, Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, viewModel.error.value, Toast.LENGTH_SHORT).show()
                                 navController.navigate(Screen.EntryScreen.route)
                             }
                         }
@@ -66,7 +66,7 @@ fun Navigation() {
                 }
             }
 
-            QuizListScreen(state = state)
+            QuizListScreen(viewModel.quizzes, viewModel.isLoading)
 
         }
 
