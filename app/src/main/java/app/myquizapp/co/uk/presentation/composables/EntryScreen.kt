@@ -13,7 +13,7 @@ import androidx.navigation.NavController
 import app.myquizapp.co.uk.presentation.Screen
 
 @Composable
-fun EntryScreen( navController: NavController){
+fun EntryScreen( onQuizzesClick: () -> Unit){
 
     Column(
         verticalArrangement = Arrangement.Center,
@@ -22,9 +22,7 @@ fun EntryScreen( navController: NavController){
             .padding(horizontal = 50.dp)
     ) {
         Button(
-        onClick = {
-            navController.navigate(Screen.QuizListScreen.route)
-        },
+        onClick = onQuizzesClick,
         modifier = Modifier.fillMaxWidth()
     ){
         Text(text = "Show All Quizzes")
