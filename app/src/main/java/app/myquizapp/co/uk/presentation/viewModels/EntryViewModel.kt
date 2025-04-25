@@ -1,8 +1,7 @@
-package app.myquizapp.co.uk.presentation
+package app.myquizapp.co.uk.presentation.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import app.myquizapp.co.uk.domain.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -21,7 +20,6 @@ class EntryViewModel @Inject constructor(): ViewModel() {
         }
     }
 }
-
 
 sealed interface EntryNavigationEvent {
     data object NavigateToQuizList: EntryNavigationEvent

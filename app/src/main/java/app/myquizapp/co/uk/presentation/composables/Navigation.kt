@@ -3,20 +3,23 @@ package app.myquizapp.co.uk.presentation.composables
 import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import app.myquizapp.co.uk.presentation.EntryNavigationEvent
-import app.myquizapp.co.uk.presentation.EntryViewModel
+import androidx.navigation.navArgument
+import app.myquizapp.co.uk.presentation.viewModels.EntryNavigationEvent
+import app.myquizapp.co.uk.presentation.viewModels.EntryViewModel
 import app.myquizapp.co.uk.presentation.LoadEvent
-import app.myquizapp.co.uk.presentation.QuizListViewModel
+import app.myquizapp.co.uk.presentation.viewModels.QuizListViewModel
 import app.myquizapp.co.uk.presentation.Screen
+import app.myquizapp.co.uk.presentation.viewModels.QuestionAnswerViewModel
+import app.myquizapp.co.uk.presentation.viewModels.QuizNavigationEvent
 
 @Composable
 fun Navigation() {
@@ -27,7 +30,6 @@ fun Navigation() {
         composable(route = Screen.EntryScreen.route) {
 
             val viewModel = hiltViewModel<EntryViewModel>()
-            val context = LocalContext.current
 
             val lifecycleOwner = LocalLifecycleOwner.current
 
@@ -46,9 +48,8 @@ fun Navigation() {
         }
 
         composable(route = Screen.QuizListScreen.route) {
-            val viewModel = hiltViewModel<QuizListViewModel>()
 
-            viewModel.loadQuizList()
+            val viewModel = hiltViewModel<QuizListViewModel>()
 
             val context = LocalContext.current
             val lifecycleOwner = LocalLifecycleOwner.current
@@ -57,7 +58,7 @@ fun Navigation() {
                 lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                     viewModel.quizLoadChannelFlow.collect { event ->
                         when (event) {
-                            LoadEvent.QuizLoadError ->{
+                            LoadEvent.LoadError ->{
                                 Toast.makeText(context, viewModel.error.value, Toast.LENGTH_SHORT).show()
                                 navController.navigate(Screen.EntryScreen.route)
                             }
@@ -66,8 +67,35 @@ fun Navigation() {
                 }
             }
 
-            QuizListScreen(viewModel.quizzes, viewModel.isLoading)
+            LaunchedEffect(lifecycleOwner.lifecycle) {
+                lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    viewModel.navigationEventsChannelFlow.collect { event ->
+                        when (event) {
+                            is QuizNavigationEvent.NavigateToQuiz -> {
+                                navController.navigate(Screen.QuestionAnswerScreen.withArgs(event.quizId.toString()))
+                            }
+                        }
+                    }
+                }
+            }
 
+            QuizListScreen(viewModel.quizzes, viewModel.isLoading, viewModel::showQuizClicked)
+
+        }
+
+        composable(
+            route = Screen.QuestionAnswerScreen.route + "/{quizId}",
+            arguments = listOf(
+                navArgument("quizId") {
+                    type = NavType.IntType
+                    nullable = false
+                }
+            )) {
+
+            val quizId: Int = it.arguments?.getInt("quizId") ?: 1000000
+            val viewModel = hiltViewModel<QuestionAnswerViewModel, QuestionAnswerViewModel.QuestionAnswerViewModelFactory> { factory -> factory.create(quizId)}
+
+            QuestionAnswerScreen(viewModel.currentQuestion, viewModel.currentlySelected, viewModel.isLoading, viewModel::updateSelected,viewModel::nextQuestion)
         }
 
     }

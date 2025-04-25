@@ -23,7 +23,6 @@ fun QuizDto.toQuiz(): Quiz {
 fun QuestionDto.toQuestion(): Question {
     return Question(
         id = this.id,
-        quizId = this.quizId,
         questionText = this.questionText,
         answers = this.answers.map { it.toAnswer() }
     )
@@ -32,7 +31,6 @@ fun QuestionDto.toQuestion(): Question {
 fun AnswerDto.toAnswer(): Answer {
     return Answer(
         id = this.id,
-        questionId = this.questionId,
         answerText = this.answerText,
         correct = this.correct)
 }

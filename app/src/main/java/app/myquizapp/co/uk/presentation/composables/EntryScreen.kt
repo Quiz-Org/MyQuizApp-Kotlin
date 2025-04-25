@@ -22,7 +22,7 @@ fun EntryScreen( onQuizzesClick: () -> Unit){
             .padding(horizontal = 50.dp)
     ) {
         Button(
-        onClick = onQuizzesClick,
+        onClick = {onQuizzesClick()},
         modifier = Modifier.fillMaxWidth()
     ){
         Text(text = "Show All Quizzes")
