@@ -3,7 +3,9 @@ package app.myquizapp.co.uk.presentation.composables
 import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import androidx.fragment.app.Fragment
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -19,6 +21,7 @@ import app.myquizapp.co.uk.presentation.LoadEvent
 import app.myquizapp.co.uk.presentation.viewModels.QuizListViewModel
 import app.myquizapp.co.uk.presentation.Screen
 import app.myquizapp.co.uk.presentation.viewModels.QuestionAnswerViewModel
+import app.myquizapp.co.uk.presentation.viewModels.QuestionNavigationEvent
 import app.myquizapp.co.uk.presentation.viewModels.QuizNavigationEvent
 
 @Composable
@@ -93,9 +96,35 @@ fun Navigation() {
             )) {
 
             val quizId: Int = it.arguments?.getInt("quizId") ?: 1000000
-            val viewModel = hiltViewModel<QuestionAnswerViewModel, QuestionAnswerViewModel.QuestionAnswerViewModelFactory> { factory -> factory.create(quizId)}
+            val viewModel = hiltViewModel<QuestionAnswerViewModel, QuestionAnswerViewModel.QuestionAnswerViewModelFactory>() { factory -> factory.create(quizId)}
+
+            val lifecycleOwner = LocalLifecycleOwner.current
+
+            LaunchedEffect(lifecycleOwner.lifecycle) {
+                lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    viewModel.navigationEventsChannelFlow.collect { event ->
+                        when (event) {
+                            is QuestionNavigationEvent.NavigateToScore -> {
+                                navController.navigate(Screen.ScoreScreen.route)
+                            }
+                        }
+                    }
+                }
+            }
 
             QuestionAnswerScreen(viewModel.currentQuestion, viewModel.currentlySelected, viewModel.isLoading, viewModel::updateSelected,viewModel::nextQuestion)
+        }
+
+        composable(route = Screen.ScoreScreen.route){
+
+            val previousBackStackEntry = remember {
+                navController.previousBackStackEntry
+            }
+
+            val viewModel: QuestionAnswerViewModel = hiltViewModel(previousBackStackEntry!!)
+
+            ScoreScreen(viewModel.score)
+
         }
 
     }

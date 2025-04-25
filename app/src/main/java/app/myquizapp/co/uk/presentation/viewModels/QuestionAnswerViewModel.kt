@@ -51,6 +51,11 @@ constructor(
     private val questionsLoadChannel = Channel<LoadEvent>()
     val questionsLoadChannelFlow = questionsLoadChannel.receiveAsFlow()
 
+    private val navigationChannel = Channel<QuestionNavigationEvent>()
+    val navigationEventsChannelFlow = navigationChannel.receiveAsFlow()
+
+    private val _score = MutableStateFlow(0)
+    val score = _score.asStateFlow()
 
     init {
         if (questions.isEmpty() && !isLoading.value)
@@ -95,10 +100,26 @@ constructor(
     }
 
     fun nextQuestion(){
-        questions[_currentQuestion.value.id - 1].answerGiven = _currentlySelected.value
-        if(questions.indexOf(_currentQuestion.value) < questions.size){
+        questions[_currentQuestion.value.id - 1].answerGiven = currentlySelected.value
+        if(questions.indexOf(_currentQuestion.value) < questions.size - 1){
             _currentQuestion.value = questions[questions.indexOf(_currentQuestion.value) + 1]
+        } else {
+            _score.value = calculateScore()
+            viewModelScope.launch {
+                navigationChannel.send(QuestionNavigationEvent.NavigateToScore)
+            }
         }
+    }
+
+    private fun calculateScore(): Int{
+        var score = 0
+        for(question in questions){
+            val correctAnswer = question.answers.find { it.correct }
+            if (correctAnswer != null) {
+                if (correctAnswer.id == question.answerGiven){score++}
+            }
+        }
+        return score
     }
 
     @AssistedFactory
@@ -106,4 +127,8 @@ constructor(
         fun create(quizId: Int): QuestionAnswerViewModel
     }
 
+}
+
+sealed interface QuestionNavigationEvent {
+    data object NavigateToScore : QuestionNavigationEvent
 }
