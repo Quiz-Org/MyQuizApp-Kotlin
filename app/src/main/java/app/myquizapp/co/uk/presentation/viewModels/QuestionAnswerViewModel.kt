@@ -1,6 +1,5 @@
 package app.myquizapp.co.uk.presentation.viewModels
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.myquizapp.co.uk.domain.quiz.Answer
@@ -13,6 +12,7 @@ import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -65,8 +65,7 @@ constructor(
     private fun loadQuestions(quizId: Int): List<Question> {
         viewModelScope.launch {
 
-            Log.d("load", "Load")
-
+            delay(2000)
             _isLoading.value = true
             _error.value = null
 
@@ -100,7 +99,7 @@ constructor(
     }
 
     fun nextQuestion(){
-        questions[_currentQuestion.value.id - 1].answerGiven = currentlySelected.value
+       _currentQuestion.value.answerGiven = currentlySelected.value
         if(questions.indexOf(_currentQuestion.value) < questions.size - 1){
             _currentQuestion.value = questions[questions.indexOf(_currentQuestion.value) + 1]
         } else {
