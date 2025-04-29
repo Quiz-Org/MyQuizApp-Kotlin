@@ -12,7 +12,6 @@ import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -44,6 +43,7 @@ constructor(
     val isLoading = _isLoading.asStateFlow()
 
     private val _error = MutableStateFlow<String?>(null)
+    val error = _error.asStateFlow()
 
     private val _currentlySelected = MutableStateFlow(0)
     val currentlySelected = _currentlySelected.asStateFlow()
@@ -54,8 +54,7 @@ constructor(
     private val navigationChannel = Channel<QuestionNavigationEvent>()
     val navigationEventsChannelFlow = navigationChannel.receiveAsFlow()
 
-    private val _score = MutableStateFlow(0)
-    val score = _score.asStateFlow()
+    private var score = 0
 
     init {
         if (questions.isEmpty() && !isLoading.value)
@@ -81,7 +80,7 @@ constructor(
 
             if (questions.isEmpty()) {
                 if (_error.value != null) {
-                    _error.value = "No Quizzes were found"
+                    _error.value = "Quiz Data Not Found"
                 }
                 questionsLoadChannel.send(LoadEvent.LoadError)
             }
@@ -102,7 +101,7 @@ constructor(
         if(questions.indexOf(_currentQuestion.value) < questions.size - 1){
             _currentQuestion.value = questions[questions.indexOf(_currentQuestion.value) + 1]
         } else {
-            _score.value = calculateScore()
+            score = calculateScore()
             viewModelScope.launch {
                 navigationChannel.send(QuestionNavigationEvent.NavigateToScore)
             }
@@ -131,6 +130,9 @@ constructor(
             navigationChannel.send(QuestionNavigationEvent.NavigateToQuiz(quizId))
         }
     }
+
+    fun getScore(): Int{ return score }
+    fun getTotal(): Int{ return questions.size }
 
     @AssistedFactory
     interface QuestionAnswerViewModelFactory {

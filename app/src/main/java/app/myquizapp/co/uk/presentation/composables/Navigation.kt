@@ -5,7 +5,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
-import androidx.fragment.app.Fragment
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -118,6 +117,21 @@ fun Navigation() {
                 }
             }
 
+            val context = LocalContext.current
+
+            LaunchedEffect(lifecycleOwner.lifecycle) {
+                lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    viewModel.questionsLoadChannelFlow.collect { event ->
+                        when (event) {
+                            LoadEvent.LoadError ->{
+                                Toast.makeText(context, viewModel.error.value, Toast.LENGTH_SHORT).show()
+                                navController.navigate(Screen.QuizListScreen.route)
+                            }
+                        }
+                    }
+                }
+            }
+
             QuestionAnswerScreen(viewModel.currentQuestion, viewModel.currentlySelected, viewModel.isLoading, viewModel::updateSelected,viewModel::nextQuestion)
         }
 
@@ -150,7 +164,7 @@ fun Navigation() {
                 }
             }
 
-            ScoreScreen(viewModel.score, viewModel::replayQuiz, viewModel::newQuiz)
+            ScoreScreen(viewModel.getScore(),viewModel.getTotal(), viewModel::replayQuiz, viewModel::newQuiz)
 
         }
 
