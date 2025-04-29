@@ -107,6 +107,12 @@ fun Navigation() {
                             is QuestionNavigationEvent.NavigateToScore -> {
                                 navController.navigate(Screen.ScoreScreen.route)
                             }
+                            is QuestionNavigationEvent.NavigateToQuiz -> {
+                                navController.navigate(Screen.QuestionAnswerScreen.withArgs(event.quizId.toString()))
+                            }
+                            is QuestionNavigationEvent.NavigateToQuizList -> {
+                                navController.navigate(Screen.QuizListScreen.route)
+                            }
                         }
                     }
                 }
@@ -123,7 +129,28 @@ fun Navigation() {
 
             val viewModel: QuestionAnswerViewModel = hiltViewModel(previousBackStackEntry!!)
 
-            ScoreScreen(viewModel.score)
+
+            val lifecycleOwner = LocalLifecycleOwner.current
+
+            LaunchedEffect(lifecycleOwner.lifecycle) {
+                lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    viewModel.navigationEventsChannelFlow.collect { event ->
+                        when (event) {
+                            is QuestionNavigationEvent.NavigateToScore -> {
+                                navController.navigate(Screen.ScoreScreen.route)
+                            }
+                            is QuestionNavigationEvent.NavigateToQuiz -> {
+                                navController.navigate(Screen.QuestionAnswerScreen.withArgs(event.quizId.toString()))
+                            }
+                            is QuestionNavigationEvent.NavigateToQuizList -> {
+                                navController.navigate(Screen.QuizListScreen.route)
+                            }
+                        }
+                    }
+                }
+            }
+
+            ScoreScreen(viewModel.score, viewModel::replayQuiz, viewModel::newQuiz)
 
         }
 

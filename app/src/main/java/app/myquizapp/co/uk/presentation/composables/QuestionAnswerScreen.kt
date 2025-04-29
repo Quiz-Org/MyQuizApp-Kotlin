@@ -1,6 +1,7 @@
 package app.myquizapp.co.uk.presentation.composables
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -33,7 +34,7 @@ fun QuestionAnswerScreen(
     isLoadingFlow: StateFlow<Boolean>,
     selectOption: (Int) -> Unit = {},
     nextQuestion: () -> Unit = {}
-    ) {
+) {
 
     val currentQuestion = currentQuestionFlow.collectAsState()
     val currentlySelected = currentlySelectedFlow.collectAsState()
@@ -41,92 +42,90 @@ fun QuestionAnswerScreen(
 
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
 
-        if (isLoading.value){
+        if (isLoading.value) {
             LoadingIndicator(isLoading)
-        } else if(!isLoading.value) {
+        } else if (!isLoading.value) {
 
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = innerPadding
+            Column(
+                modifier = Modifier.fillMaxWidth(),
             )
             {
+                Card(
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(3F),
+                    elevation = CardDefaults.cardElevation(
+                        defaultElevation = 50.dp
+                    )
+                ) {
+                    Text(
+                        text = currentQuestion.value.questionText,
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.headlineLarge,
+                    )
+                }
 
-                item {
-                    Row(
-                        modifier = Modifier
-                            .fillParentMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceEvenly
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(2F)
+                        .padding(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-
+                    items(
+                        items = currentQuestion.value.answers, key = { it.id },
+                    ) { answer ->
                         Card(
-
-                            colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.surfaceVariant,),
-                            modifier = Modifier
-                                .fillMaxSize()
-
+                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+                            elevation = CardDefaults.cardElevation(defaultElevation = 50.dp),
+                            modifier = Modifier.padding(10.dp).fillMaxWidth(),
+                        ) {
+                            Row(
+                                modifier = Modifier.selectable(
+                                    selected = false,
+                                    onClick = { selectOption(answer.id) },
+                                    role = Role.RadioButton
+                                )
+                                    .padding(10.dp)
+                                    .fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Start
                             ) {
-                            Text(
-                                text = currentQuestion.value.questionText,
-                                modifier = Modifier
-                                    .fillParentMaxWidth(),
-                                textAlign = TextAlign.Center,
-                                style = MaterialTheme.typography.headlineLarge,
-                            )
-                        }
+                                RadioButton(
+                                    selected = (answer.id == currentlySelected.value),
+                                    onClick = null,
+                                    modifier = Modifier
+                                )
+                                Text(
+                                    text = answer.answerText,
+                                    modifier = Modifier.padding(start = 10.dp)
+                                )
+                            }
 
+                        }
 
                     }
                 }
 
-                items(items = currentQuestion.value.answers, key = { it.id },
-
-                ) { answer ->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .selectable(
-                                selected = false,
-                                onClick = { selectOption(answer.id) },
-                                role = Role.RadioButton
-                            ),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceEvenly
-                    )
-                    {
-                    RadioButton(
-                        selected = (answer.id == currentlySelected.value),
-                        onClick = null,
-                        modifier = Modifier
-                            .weight(0.33F)
-                            .fillMaxSize()
-                    )
-                    Text(
-                        text = answer.answerText,
-                        modifier = Modifier
-                            .weight(0.66F)
-                            .fillMaxSize()
-                    )
-                }
-                }
-
-                item(
-
-                ){
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(10.dp),
-                    )
-                    {
-                        Button(onClick = nextQuestion) { }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1F)
+                        .padding(10.dp),
+                    horizontalArrangement = Arrangement.Center
+                )
+                {
+                    Button(onClick = nextQuestion) {
                         Text(text = "Next Question")
                     }
                 }
 
             }
-
         }
+
     }
 }

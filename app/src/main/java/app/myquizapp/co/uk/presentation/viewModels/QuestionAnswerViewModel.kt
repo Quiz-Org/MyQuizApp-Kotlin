@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
 class QuestionAnswerViewModel @AssistedInject
 constructor(
     private val repository: QuizRepository,
-    @Assisted quizId: Int
+    @Assisted private val quizId: Int
 ) : ViewModel() {
 
     private var questions: List<Question> = listOf()
@@ -65,7 +65,6 @@ constructor(
     private fun loadQuestions(quizId: Int): List<Question> {
         viewModelScope.launch {
 
-            delay(2000)
             _isLoading.value = true
             _error.value = null
 
@@ -121,6 +120,18 @@ constructor(
         return score
     }
 
+    fun newQuiz(){
+        viewModelScope.launch {
+            navigationChannel.send(QuestionNavigationEvent.NavigateToQuizList)
+        }
+    }
+
+    fun replayQuiz(){
+        viewModelScope.launch {
+            navigationChannel.send(QuestionNavigationEvent.NavigateToQuiz(quizId))
+        }
+    }
+
     @AssistedFactory
     interface QuestionAnswerViewModelFactory {
         fun create(quizId: Int): QuestionAnswerViewModel
@@ -130,4 +141,6 @@ constructor(
 
 sealed interface QuestionNavigationEvent {
     data object NavigateToScore : QuestionNavigationEvent
+    data class NavigateToQuiz(val quizId: Int): QuestionNavigationEvent
+    data object NavigateToQuizList: QuestionNavigationEvent
 }
