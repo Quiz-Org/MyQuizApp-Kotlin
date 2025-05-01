@@ -1,6 +1,5 @@
 package app.myquizapp.co.uk.presentation.viewModels
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.myquizapp.co.uk.domain.quiz.Quiz
@@ -61,7 +60,7 @@ class QuizListViewModel @Inject constructor(
             }
 
             if (_quizzes.value.isEmpty()) {
-                if (_error.value != null) {
+                if (_error.value == null) {
                     _error.value = "No Quizzes were found"
                 }
                 quizLoadChannel.send(LoadEvent.LoadError)

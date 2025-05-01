@@ -19,7 +19,7 @@ object AppModule {
     @Singleton
     fun provideQuizApi(): QuizApi {
         return Retrofit.Builder()
-            .baseUrl("http://10.0.2.2:80")
+            .baseUrl("https://app.myquizapp.co.uk")
             .addConverterFactory(MoshiConverterFactory.create())
             .build()
             .create()
