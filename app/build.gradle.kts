@@ -18,6 +18,12 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        // ---> Add the next line
+        //manifestPlaceholders = [auth0Domain: "@string/com_auth0_domain", auth0Scheme: "demo"]
+        manifestPlaceholders["auth0Domain"] = "dev-cgb6bxv74k03k3i6.uk.auth0.com"
+        manifestPlaceholders["auth0Scheme"] = "https"
+
     }
 
     buildTypes {
@@ -60,7 +66,7 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-
+    implementation (libs.auth0)
 
     //Dagger - Hilt
     implementation(libs.hilt.android)

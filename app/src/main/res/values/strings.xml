@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">MyQuizApp-Kotlin</string>
+    <string name="com_auth0_domain">dev-cgb6bxv74k03k3i6.uk.auth0.com</string>
+    <string name="com_auth0_client_id">NdsyAsvZxpr8QxeMkAkorN81W2dlCr31</string>
 </resources>

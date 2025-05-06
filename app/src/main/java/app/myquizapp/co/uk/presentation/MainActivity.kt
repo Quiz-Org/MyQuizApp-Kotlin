@@ -5,13 +5,19 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import app.myquizapp.co.uk.presentation.composables.Navigation
 import app.myquizapp.co.uk.presentation.ui.theme.MyQuizAppKotlinTheme
+import com.auth0.android.Auth0
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
+    private lateinit var account: Auth0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        account = Auth0.getInstance(this)
+
         setContent {
             MyQuizAppKotlinTheme {
                 Navigation()
