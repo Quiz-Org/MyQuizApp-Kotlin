@@ -16,7 +16,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        account = Auth0.getInstance(this)
+        this.applicationContext
 
         setContent {
             MyQuizAppKotlinTheme {

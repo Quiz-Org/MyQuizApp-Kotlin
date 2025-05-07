@@ -21,9 +21,13 @@ android {
 
         // ---> Add the next line
         //manifestPlaceholders = [auth0Domain: "@string/com_auth0_domain", auth0Scheme: "demo"]
-        manifestPlaceholders["auth0Domain"] = "dev-cgb6bxv74k03k3i6.uk.auth0.com"
-        manifestPlaceholders["auth0Scheme"] = "https"
+        //manifestPlaceholders["auth0Domain"] = "dev-cgb6bxv74k03k3i6.uk.auth0.com"
+        //manifestPlaceholders["auth0Scheme"] = "https"
 
+        manifestPlaceholders.putAll(  mapOf(
+            "auth0Domain" to "@string/com_auth0_domain",
+            "auth0Scheme" to "@string/com_auth0_scheme",
+        ))
     }
 
     buildTypes {

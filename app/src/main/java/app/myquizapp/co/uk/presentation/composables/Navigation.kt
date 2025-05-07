@@ -46,7 +46,7 @@ fun Navigation() {
                     }
                 }
             }
-            EntryScreen(onQuizzesClick = viewModel::showQuizzesClicked)
+            EntryScreen(onQuizzesClick = viewModel::showQuizzesClicked, viewModel::logIn)
         }
 
         composable(route = Screen.QuizListScreen.route) {
