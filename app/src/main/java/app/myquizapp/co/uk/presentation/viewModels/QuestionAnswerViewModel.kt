@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import app.myquizapp.co.uk.domain.quiz.Answer
 import app.myquizapp.co.uk.domain.quiz.Question
 import app.myquizapp.co.uk.domain.repository.QuizRepository
+import app.myquizapp.co.uk.domain.repository.ScoreRepository
+import app.myquizapp.co.uk.domain.repository.UserRepository
 import app.myquizapp.co.uk.domain.util.Resource
 import app.myquizapp.co.uk.presentation.LoadEvent
 import dagger.assisted.Assisted
@@ -20,7 +22,9 @@ import kotlinx.coroutines.launch
 @HiltViewModel(assistedFactory = QuestionAnswerViewModel.QuestionAnswerViewModelFactory::class)
 class QuestionAnswerViewModel @AssistedInject
 constructor(
-    private val repository: QuizRepository,
+    private val quizRepository: QuizRepository,
+    private val userRepository: UserRepository,
+    private val scoreRepository: ScoreRepository,
     @Assisted private val quizId: Int
 ) : ViewModel() {
 
@@ -54,6 +58,8 @@ constructor(
     private val navigationChannel = Channel<QuestionNavigationEvent>()
     val navigationEventsChannelFlow = navigationChannel.receiveAsFlow()
 
+    private val isLoggedInFlow = userRepository.isLoggedInFlow
+
     private var score = 0
 
     init {
@@ -67,7 +73,7 @@ constructor(
             _isLoading.value = true
             _error.value = null
 
-            when(val result = repository.getQuestions(quizId)){
+            when(val result = quizRepository.getQuestions(quizId)){
                 is Resource.Success -> {
                     questions = result.data ?: emptyList()
                     _isLoading.value = false
@@ -102,6 +108,7 @@ constructor(
             _currentQuestion.value = questions[questions.indexOf(_currentQuestion.value) + 1]
         } else {
             score = calculateScore()
+            if(isLoggedInFlow.value) submitScore()
             viewModelScope.launch {
                 navigationChannel.send(QuestionNavigationEvent.NavigateToScore)
             }
@@ -116,7 +123,19 @@ constructor(
                 if (correctAnswer.id == question.answerGiven){score++}
             }
         }
+
         return score
+    }
+
+    private fun submitScore(){
+        viewModelScope.launch {
+            scoreRepository.postScore(
+                userRepository.tokenFlow.value ?: "",
+                quizId,
+                score,
+                questions.size
+            )
+        }
     }
 
     fun newQuiz(){
@@ -128,6 +147,12 @@ constructor(
     fun replayQuiz(){
         viewModelScope.launch {
             navigationChannel.send(QuestionNavigationEvent.NavigateToQuiz(quizId))
+        }
+    }
+
+    fun toEntry(){
+        viewModelScope.launch {
+            navigationChannel.send(QuestionNavigationEvent.NavigateToEntry)
         }
     }
 
@@ -145,4 +170,5 @@ sealed interface QuestionNavigationEvent {
     data object NavigateToScore : QuestionNavigationEvent
     data class NavigateToQuiz(val quizId: Int): QuestionNavigationEvent
     data object NavigateToQuizList: QuestionNavigationEvent
+    data object NavigateToEntry: QuestionNavigationEvent
 }

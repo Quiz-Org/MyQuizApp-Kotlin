@@ -12,13 +12,17 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import app.myquizapp.co.uk.presentation.Screen
 import com.auth0.android.result.UserProfile
 import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable
-fun EntryScreen(onQuizzesClick: () -> Unit, logIn: (context: Context) -> Unit, logOut: (context: Context) -> Unit, isLoggedInFlow: MutableStateFlow<Boolean>, userFlow: MutableStateFlow<UserProfile?>) {
+fun EntryScreen(
+    onQuizzesClick: () -> Unit,
+    logIn: (context: Context) -> Unit,
+    logOut: (context: Context) -> Unit,
+    isLoggedInFlow: MutableStateFlow<Boolean>,
+    userFlow: MutableStateFlow<UserProfile?>,
+) {
 
     val context = LocalContext.current
     val isLoggedIn = isLoggedInFlow.collectAsState()

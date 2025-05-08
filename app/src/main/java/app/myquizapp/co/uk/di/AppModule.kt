@@ -1,6 +1,7 @@
 package app.myquizapp.co.uk.di
 
 import app.myquizapp.co.uk.data.remote.QuizApi
+import app.myquizapp.co.uk.data.remote.ScoreApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,6 +19,16 @@ object AppModule {
     @Provides
     @Singleton
     fun provideQuizApi(): QuizApi {
+        return Retrofit.Builder()
+            .baseUrl("https://app.myquizapp.co.uk")
+            .addConverterFactory(MoshiConverterFactory.create())
+            .build()
+            .create()
+    }
+
+    @Provides
+    @Singleton
+    fun provideScoreApi(): ScoreApi {
         return Retrofit.Builder()
             .baseUrl("https://app.myquizapp.co.uk")
             .addConverterFactory(MoshiConverterFactory.create())

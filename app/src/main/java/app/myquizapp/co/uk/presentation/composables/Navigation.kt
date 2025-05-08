@@ -112,6 +112,9 @@ fun Navigation() {
                             is QuestionNavigationEvent.NavigateToQuizList -> {
                                 navController.navigate(Screen.QuizListScreen.route)
                             }
+                            is QuestionNavigationEvent.NavigateToEntry -> {
+                                navController.navigate(Screen.EntryScreen.route)
+                            }
                         }
                     }
                 }
@@ -159,12 +162,15 @@ fun Navigation() {
                             is QuestionNavigationEvent.NavigateToQuizList -> {
                                 navController.navigate(Screen.QuizListScreen.route)
                             }
+                            is QuestionNavigationEvent.NavigateToEntry -> {
+                                navController.navigate(Screen.EntryScreen.route)
+                            }
                         }
                     }
                 }
             }
 
-            ScoreScreen(viewModel.getScore(),viewModel.getTotal(), viewModel::replayQuiz, viewModel::newQuiz)
+            ScoreScreen(viewModel.getScore(),viewModel.getTotal(),viewModel::replayQuiz, viewModel::newQuiz, viewModel::toEntry)
 
         }
 

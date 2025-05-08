@@ -1,8 +1,10 @@
 package app.myquizapp.co.uk.di
 
 import app.myquizapp.co.uk.data.repository.QuizRepositoryImpl
+import app.myquizapp.co.uk.data.repository.ScoreRepositoryImpl
 import app.myquizapp.co.uk.data.repository.UserRepositoryImpl
 import app.myquizapp.co.uk.domain.repository.QuizRepository
+import app.myquizapp.co.uk.domain.repository.ScoreRepository
 import app.myquizapp.co.uk.domain.repository.UserRepository
 import dagger.Binds
 import dagger.Module
@@ -27,5 +29,10 @@ abstract class RepositoryModule {
         userRepositoryImpl: UserRepositoryImpl
     ): UserRepository
 
+    @Binds
+    @Singleton
+    abstract fun bindScoreRepository(
+        scoreRepositoryImpl: ScoreRepositoryImpl
+    ): ScoreRepository
 
 }
