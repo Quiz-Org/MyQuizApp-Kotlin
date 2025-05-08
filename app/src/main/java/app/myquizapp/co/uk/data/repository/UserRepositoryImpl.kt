@@ -6,25 +6,27 @@ import com.auth0.android.Auth0
 import com.auth0.android.authentication.AuthenticationException
 import com.auth0.android.provider.WebAuthProvider
 import com.auth0.android.result.UserProfile
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class UserRepositoryImpl @Inject constructor(@ApplicationContext private val context: Context): UserRepository {
+class UserRepositoryImpl @Inject constructor(): UserRepository {
 
     private val account = Auth0.getInstance("NdsyAsvZxpr8QxeMkAkorN81W2dlCr31","auth.myquizapp.co.uk")
 
     override val isLoggedInFlow = MutableStateFlow(false)
     override val userFlow = MutableStateFlow<UserProfile?>(null)
+    override val tokenFlow = MutableStateFlow<String?>(null)
 
     override suspend fun logIn(context: Context){
         withContext(Dispatchers.IO){
             try {
-                val credentials = WebAuthProvider.login(account).withScheme("app")
+                val credentials = WebAuthProvider.login(account)
+                    .withScheme("app")
                     .await(context)
                 userFlow.value = credentials.user
+                tokenFlow.value = credentials.idToken
                 isLoggedInFlow.value = true
             } catch (e: AuthenticationException) {
                 e.printStackTrace()
